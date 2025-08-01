@@ -7,8 +7,10 @@ import { dirname, join } from 'node:path';
 
 const app: Application  = express();
 const server = createServer(app);
-const io = new Server(server);
 
+const io = new Server(server, { 
+  connectionStateRecovery: {}
+});
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -16,11 +18,13 @@ app.get('/', (req: Request, res: Response) => {
   res.sendFile(join(__dirname, '../public/index.html'));
 });
 
+
 io.on('connection', (socket) => {
   socket.on('chat message', (msg) => {
    io.emit('chat message', msg);
   });
 });
+
 
 
 server.listen(3000, () => {
